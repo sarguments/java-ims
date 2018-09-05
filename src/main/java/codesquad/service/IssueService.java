@@ -3,6 +3,8 @@ package codesquad.service;
 import codesquad.UnAuthorizedException;
 import codesquad.domain.*;
 import codesquad.dto.IssueDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Service
 public class IssueService {
+    private static final Logger log = LoggerFactory.getLogger(IssueService.class);
+
     @Resource(name = "issueRepository")
     private IssueRepository issueRepository;
 
@@ -26,6 +30,7 @@ public class IssueService {
     }
 
     public Issue get(Long id) {
+        log.debug("이슈서비스 이슈 겟 id : {}", id);
         return issueRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 

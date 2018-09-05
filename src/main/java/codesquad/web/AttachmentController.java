@@ -55,7 +55,7 @@ public class AttachmentController {
         // TODO 테스트 어려움 때문에 get방식이 되었는데 객체지향적으로 변경하려면?
 
         String newName = attachmentService.makeNewName(file.getOriginalFilename());
-        File toSaveFile = attachmentService.makeFile(file.getBytes(), newName);
+        File toSaveFile = attachmentService.makeFile(file, newName);
         Attachment attachment = attachmentService.saveFile(toSaveFile, file.getContentType(), issueId);
 
         issueService.setFile(issueId, attachment);

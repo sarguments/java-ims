@@ -11,8 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotEquals;
@@ -43,21 +46,22 @@ public class AttachmentServiceTest {
     }
 
     @Test
-    public void makeFile() {
+    public void makeFile() throws IOException {
         String example = "Convert Java String";
         byte[] bytes = example.getBytes();
 
-        File madeFile = attachmentService.makeFile(bytes, "test-name");
+        MultipartFile file = new MockMultipartFile("test-name", bytes);
+        File madeFile = attachmentService.makeFile(file, "test-name");
         assertThat(madeFile.getName(), is("test-name"));
     }
 
     @Test
-    public void makeInfo() {
-//        AttachmentService attachmentService = new AttachmentService();
+    public void makeInfo() throws IOException {
         String example = "Convert Java String";
         byte[] bytes = example.getBytes();
 
-        File madeFile = attachmentService.makeFile(bytes, "test-name");
+        MultipartFile file = new MockMultipartFile("test-name", bytes);
+        File madeFile = attachmentService.makeFile(file, "test-name");
         assertThat(madeFile.getName(), is("test-name"));
 
         String fileName = "test-name";

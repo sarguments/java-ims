@@ -28,6 +28,7 @@ public class AttachmentControllerTest extends AcceptanceTest {
         MatcherAssert.assertThat(responseEntity.getStatusCode(), Matchers.is(HttpStatus.FOUND));
 
         String path = responseEntity.getHeaders().getLocation().getPath();
+        log.debug("path : {}", path);
 
         ResponseEntity<String> result = template.getForEntity(path + "/attachments/1", String.class);
         assertEquals(HttpStatus.OK, result.getStatusCode());

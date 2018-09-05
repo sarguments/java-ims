@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
@@ -54,20 +54,19 @@ public class AttachmentService {
     }
 
     // 바이트 배열을 특정 이름으로 filePath에 저장되는 파일에 넣어서 리턴
-    public File makeFile(byte[] fileData, String savedName) {
+    public File makeFile(MultipartFile file, String savedName) throws IOException {
         File target = new File(filePath, savedName);
-        try {
-            FileCopyUtils.copy(fileData, target);
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
+        file.transferTo(target);
 
         return target;
     }
 
     // Attachment 객체 생성해서 repo에 저장하고 리턴
     public Attachment saveFile(File madeFile, String type, Long issueId) {
+        log.debug("이슈 찾기 시작");
         Issue foundIssue = issueRepository.findById(issueId).orElseThrow(EntityNotFoundException::new);
+        log.debug("이슈 잘 찾음 : {}", issueId);
+
         Attachment attachment = new Attachment(madeFile.getName(), type, foundIssue);
         return attachmentRepository.save(attachment);
     }
@@ -81,7 +80,7 @@ public class AttachmentService {
         Attachment attachment = getAttachment(id);
 
         // 파일 경로 정보에 해당하는 파일을 읽어 클라이언트로 응답한다.
-        Path path = Paths.get("./files/" + attachment.getName());
+        Path path = Paths.get(String.format("%s/%s", filePath, attachment.getName()));
         PathResource resource = new PathResource(path);
 
         HttpHeaders header = new HttpHeaders();
